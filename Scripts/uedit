@@ -1,0 +1,78 @@
+#!/bin/bash
+##    Copyright (C) 2012, Francesco Di Nardo
+##    If you have any questions or report me a bug, contact me: francesco.dinardo85@gmail.com
+
+##    This program is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 3 of the License, or
+##    (at your option) any later version.
+
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+
+##    You should have received a copy of the GNU General Public License
+##    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+##    UEDIT:You can edit a command, if and only if it's in your 
+##    PATH and if it's a text file.
+##    I use this script to modify my scripts that are in the path, without 
+##+   write the enteir path. 
+#############################################################################
+
+# function:choesEditor
+# Ask the user's preferred editor (by default is vim)
+# revision 1: ADD check if the vim and gedit is installed (or if run KDE check KATE)  
+function choseEditor {
+    EDITOR=$EDITOR
+    echo "Choose Editor:"
+    echo "[1] $EDITOR (default)"
+    echo "[2] gedit"
+    echo -n ">> "
+    read CHOOSE
+    if [[ $CHOOSE == 2 ]]; then
+        EDITOR='gedit'
+    fi
+    echo "$1 opened with $EDITOR."
+        
+}
+
+# Check validate call uedit
+if [[ $# < 1 ]]; then
+	echo "ATTENTION: no argoumet!"
+	echo "USAGE: uedit 'name of command'"
+	exit 1
+fi
+# Check numbers of argouments for uedit
+if [[ $# > 1 ]]; then 
+	echo "ATTENTION: The argoument must be only one."
+	echo "Argoument numbers: $#"
+	echo "USAGE: uedit 'name of command'"
+	exit 1
+fi
+
+# Check if the $1 is in your PATH
+if ! which $1 &> /dev/null; then 
+	echo "uedit: no $1 in ($PATH)"
+	exit 1
+else
+    RESULT=`which $1`
+fi
+
+# Check if the file is text. Then if true open it
+# Else Error.
+TYPE=`file --mime-type $RESULT | cut -d" " -f2 | cut -d/ -f1`
+if [[ $TYPE = "text" ]]; then
+    choseEditor "$1"
+    if [[ $EDITOR == 'gedit' ]]; then
+        	$EDITOR $RESULT &
+        else
+           	$EDITOR $RESULT
+    fi
+else 
+	echo "The type of $1 is $TYPE."
+	echo "You can modify only text files."
+fi
+
+exit 0

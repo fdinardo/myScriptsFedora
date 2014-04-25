@@ -1,0 +1,33 @@
+#!/bin/bash
+## Created by myself! Francesco :D
+## Move the file into a standard jadPath
+
+pathJad=`alias | grep -i openJadDir | cut -d" " -f3 | cut -d"'" -f1`
+if [ -e $pathJad ]; then
+	for name in $@; do
+	## Checks the type of the argument. If isn't a .class file the script will quit.
+		extension=`echo $name |cut -d. -f2`;
+		if  [[ "$extension" != "class" ]]; then  
+			echo -e "[ERROR] $name not is a .class file.\n";
+			break
+		fi
+	## Execute jad on the first argoument	
+	## If the exec is gone, then try to move the .jad file into the standard jad' path 
+		if /home/angelsoul/Documenti/JAD/jad $name >> /dev/null ; then 
+			file=$(echo $name | cut -d. -f1);
+			jadfile=$file.jad;	
+			if mv $jadfile $pathJad ; then
+				echo " Jad is executed and [$jadfile] is moved to [$pathJad]";
+	## If the execution and the move jad file are gone, then it's ok! enjoy!
+	     	else 
+	    	    echo " Jad is executed, but it's unable to move [$jadfile] to [$pathJad]";
+	    	fi
+		else 
+	    	echo " Unable to execute jad on [$name]"
+		fi
+	## end ##
+	done;
+else
+	echo "Jad is not installed"
+	exit
+fi

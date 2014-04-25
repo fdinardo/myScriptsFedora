@@ -1,0 +1,19 @@
+#!/bin/bash
+CHOICE="n"
+MYPATH=$HOME/.local/share/Trash
+COUNT=$(ls -1 $MYPATH/files | wc -l)
+if [[ $COUNT != "0" ]]; then
+	ls -1 $MYPATH/files
+	echo
+	echo -n "Ci sono $COUNT files da eliminare? [y/N]:"
+	read CHOICE
+	if [[ $CHOICE == "y" || $CHOICE == "Y" ]]; then
+		rm -r $MYPATH/files/* 2> /dev/null;
+		rm $MYPATH/info/* 2> /dev/null;
+		echo "Eliminati $COUNT files dal cestino"
+	else
+		echo "Nessun file rimosso"
+	fi
+else
+	echo "Non ci sono file da rimuovere"
+fi

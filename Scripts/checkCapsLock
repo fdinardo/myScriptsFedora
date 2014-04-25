@@ -1,0 +1,26 @@
+#!/bin/bash
+
+## It check the status of Caps Lock
+## and sends a message:
+
+if ! which notify-send > /dev/null; then 
+	echo -e "Manca il pacchetto \"notify-send\"\n"
+	exit
+fi
+
+previous=`xset q | grep -i caps | cut -d: -f3 | cut -d" " -f4`
+while true; do
+status=`xset q | grep -i caps | cut -d: -f3 | cut -d" " -f4`
+	if [[ $status != $previous ]]; then
+		if [[ $status == "on" ]]; then
+			path="/usr/share/icons/Faenza/actions/scalable/lock.svg"
+		else 
+			path="/home/angelsoul/Immagini/ImmaginiProg/nolock.png"
+		fi
+		killall notify-osd >> /dev/null
+		notify-send -i $path $status "Caps Lock status"
+		previous=$status
+		sleep 0.5
+	fi
+	sleep 0.5
+done
